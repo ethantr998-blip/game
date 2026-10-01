@@ -144,7 +144,7 @@ class Flight {
       b.tPhase += dt;
       this.guide(b, dt);
       b.step(dt);
-      if (this.failures) this.randomFailures(b, dt);
+      if (this.failures && !b.deb && b.stage) this.randomFailures(b, dt);
       if (!b.fixed && b.alive) this.checkGround(b);
     }
     if (this.stack && this.released) this.trackMaxQ(this.stack);
@@ -418,9 +418,9 @@ class Flight {
     }
     if (this.veh.key === 'falcon9' && hT < 260 && !this.has('legs', b)) { this.event('legs', b, 'Bung chân hạ cánh'); }
     if (this.has('legs', b)) st.anim.legs = Math.min(1, st.anim.legs + dt / 2.2);
-    /* manual override */
-    if (b.manual && this.manualIn) { thr = this.manualIn.thr; b.attCmd = up + this.manualIn.tilt; }
+    /* the autopilot's answer is kept as the on-screen suggestion; in manual mode the player's stick drives the engines */
     b.autoThr = clamp(thr, 0, 1); b.autoTilt = Math.atan2(ax, aUp);
+    if (b.manual && this.manualIn) { thr = this.manualIn.thr; b.attCmd = up + this.manualIn.tilt; }
     for (const x of set) x.cmd = clamp(thr, 0, 1);
     if (rv.vy > 0.6 && hT > 1.5 && !b.manual) for (const x of set) x.cmd = x.spec.minThr; /* climbing back: back off to minimum */
     if (!canHover && !b.manual && rv.vy > -0.2 && hT < 3) for (const x of set) x.stop(); /* hoverslam cut-off */

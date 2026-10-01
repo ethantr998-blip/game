@@ -143,13 +143,16 @@ kbd{font-family:var(--mono);font-size:10.5px;padding:1px 5px;border:1px solid rg
 .ctrls{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:auto}
 .ctrls .seg{justify-content:flex-end}
 .ctrls .seg button{flex:0 0 auto;background:rgba(7,10,18,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-color:rgba(255,255,255,.14);font-size:12.5px;padding:6px 9px}
-.manual{position:absolute;right:16px;bottom:150px;width:210px;background:rgba(7,10,18,.82);border:1px solid rgba(255,173,56,.4);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+.manual{position:absolute;right:12px;top:164px;width:210px;max-height:calc(100% - 300px);overflow:auto;background:rgba(7,10,18,.82);border:1px solid rgba(255,173,56,.4);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 .manual h4{margin:0;font-family:var(--display);letter-spacing:.12em;font-size:15px;color:var(--amber)}
 .gauge{position:relative;height:10px;border-radius:5px;background:rgba(255,255,255,.12)}
 .gauge i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--amber)}
 .gauge u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--cyan)}
 .manual .mrow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
 .manual .mrow span{color:var(--muted)}
+.manual .btns{display:none}
+.manual .btns .btn{padding:8px 6px;font-size:15px}
+@media (hover:none){.manual .btns{display:flex}.manual .note{display:none}}
 .toasts{position:absolute;left:50%;top:24%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;width:calc(100% - 32px)}
 .toast{background:rgba(7,10,18,.86);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;animation:tin .25s ease-out;max-width:100%;text-align:center}
 .toast.crit{border-color:var(--crit);color:#ffd1cd}
@@ -173,7 +176,7 @@ kbd{font-family:var(--mono);font-size:10.5px;padding:1px 5px;border:1px solid rg
   .engmap{width:60px;height:60px}
   .st .tm b{font-size:20px}
   .st .prop{display:none}
-  .manual{bottom:200px;width:180px}
+  .manual{top:150px;width:170px;max-height:calc(100% - 330px)}
   .ctrls .seg button{font-size:11.5px;padding:5px 7px}
 }
 @media (hover:none){kbd{display:none}}
