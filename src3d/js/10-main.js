@@ -324,7 +324,7 @@ function updateVisuals(dt, t) {
       grp.updateMatrixWorld(true);
       const exitY = Math.min(...st.engines.map(e => e.view ? e.view.geo.exitY : -3));
       _ex.set(0, exitY, 0).applyMatrix4(grp.matrixWorld); _dir.copy(v.axis).negate();
-      if (lights.length < 2) lights.push({pos: _ex.clone().addScaledVector(_dir, 8), I: Math.min(3, Fsum / 2e7) * (amb > 0.2 ? 1 : 0.3), col: st.light.color});
+      if (lights.length < 2) lights.push({pos: _ex.clone().addScaledVector(_dir, 8), I: Math.min(1.1, Fsum / 7e7) * (amb > 0.2 ? 1 : 0.3), col: st.light.color});
       emitExhaust(st, b, v, _ex, _dir, Fsum, amb, h, fuel, dt, wind);
       if (si === 0 || (b && b.stages.length === 1)) { updateVoice(voice++, _ex, Fsum, h - (b ? 0 : 0), clamp(Fsum / 2.5e7, 0, 1) * (fuel === 'CH4' ? 1.2 : 0.8), (G.camMode === 'onboard' || G.camMode === 'engines') && b === focusBody()); }
       /* engine-start sparks (green TEA-TEB flash on Merlins) */
@@ -339,8 +339,8 @@ function updateVisuals(dt, t) {
   }
   for (let i = voice; i < 3; i++) if (SND.voices[i]) SND.voices[i].in.gain.setTargetAtTime(0, SND.ctx.currentTime, 0.2);
   setSmokeLights(lights);
-  const um = smokeFX.mat.uniforms; um.uSunCol.value.copy(_sunCol).multiplyScalar(1.15);
-  const night = 1 - smooth((sunDir.y + 0.12) / 0.2); um.uAmb.value.setRGB(lerp(0.42, 0.03, night), lerp(0.45, 0.035, night), lerp(0.52, 0.06, night));
+  const um = smokeFX.mat.uniforms; um.uSunCol.value.copy(_sunCol);
+  const night = 1 - smooth((sunDir.y + 0.12) / 0.2); um.uAmb.value.setRGB(lerp(0.2, 0.025, night), lerp(0.22, 0.03, night), lerp(0.27, 0.05, night));
   smokeFX.update(dt, wind); glowFX.update(dt, wind); smokeFX.upload(camera.position); glowFX.upload(camera.position);
   updateFlashes(dt);
 }
@@ -349,23 +349,23 @@ function emitExhaust(st, b, v, ex, dir, F, amb, h, fuel, dt, wind) {
   const n = k => { const x = k * dt; return Math.floor(x) + (Math.random() < x % 1 ? 1 : 0); };
   /* exhaust smoke / steam in the lower atmosphere */
   if (amb > 0.04) {
-    const rate = Math.min(260, F / 1e6 * 5) * PQ * Math.min(1, amb * 1.6);
+    const rate = Math.min(150, F / 1e6 * 2.6) * PQ * Math.min(1, amb * 1.6);
     for (let i = n(rate); i--;) {
       const sp = 60 + Math.random() * 120, j = (Math.random() - 0.5) * R * 1.4, jz = (Math.random() - 0.5) * R * 1.4;
       smokeFX.emit(ex.x + j, ex.y, ex.z + jz, v.vel.x * 0.85 + dir.x * sp + (Math.random() - 0.5) * 20, v.vel.y * 0.85 + dir.y * sp, v.vel.z + dir.z * sp + (Math.random() - 0.5) * 20,
-        8 + Math.random() * 10, R * 0.55 + Math.random() * 2, 4 + Math.random() * 6, 0.42, col[0], col[1], col[2], 0, 1.4, 0.5);
+        8 + Math.random() * 10, R * 0.55 + Math.random() * 2, 3 + Math.random() * 4, 0.3, col[0], col[1], col[2], 0, 1.4, 0.5);
     }
   }
   /* water deluge / flame trench steam while the plume hits the pad */
   if (ground < 260 && (!b || b.id === 'stack')) {
-    const k = Math.min(420, F / 1e6 * 6.5) * PQ * (1 - ground / 260);
+    const k = Math.min(240, F / 1e6 * 3.5) * PQ * (1 - ground / 260);
     for (let i = n(k); i--;) {
       if (curSite === 'starbase') {
         const a = Math.random() * TAU, sp = 18 + Math.random() * 45;
-        smokeFX.emit(Math.cos(a) * 9, 2 + Math.random() * 4, Math.sin(a) * 9, Math.cos(a) * sp, 2 + Math.random() * 8, Math.sin(a) * sp, 9 + Math.random() * 12, 6, 2.2 + Math.random() * 2.5, 0.62, 0.93, 0.94, 0.96, 0, 0.45, 1.1);
+        smokeFX.emit(Math.cos(a) * 9, 2 + Math.random() * 4, Math.sin(a) * 9, Math.cos(a) * sp, 2 + Math.random() * 8, Math.sin(a) * sp, 9 + Math.random() * 12, 6, 2.2 + Math.random() * 2.5, 0.42, 0.9, 0.91, 0.93, 0, 0.45, 1.1);
       } else {
         const sp = 30 + Math.random() * 50, s = Math.random() < 0.85 ? 1 : -1;
-        smokeFX.emit((Math.random() - 0.5) * 10, 9, s * (55 + Math.random() * 20), (Math.random() - 0.5) * 16, 6 + Math.random() * 14, s * sp, 9 + Math.random() * 12, 6, 2.2 + Math.random() * 2.5, 0.6, 0.93, 0.94, 0.96, 0, 0.45, 1.1);
+        smokeFX.emit((Math.random() - 0.5) * 10, 9, s * (55 + Math.random() * 20), (Math.random() - 0.5) * 16, 6 + Math.random() * 14, s * sp, 9 + Math.random() * 12, 6, 2.2 + Math.random() * 2.5, 0.42, 0.9, 0.91, 0.93, 0, 0.45, 1.1);
       }
     }
   }

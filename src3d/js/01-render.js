@@ -36,7 +36,7 @@ function buildComposer() {
   composer = new EffectComposer(renderer, rt);
   renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
-  bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.55, 0.55, 1.05);
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.4, 0.45, 1.6);
   bloomPass.enabled = Q.bloom && featureDrop < 2;
   composer.addPass(bloomPass);
   outputPass = new OutputPass();

@@ -12,9 +12,9 @@ void main(){
     vec3 ec=vec3(0.,-6371000.,0.); vec3 up=normalize(aPos-ec); float alt=max(length(aPos-ec)-6371000.,0.);
     float dip=acos(clamp(6371000./(6371000.+alt),0.,1.)); float el=asin(clamp(dot(uSun,up),-1.,1.))+dip;
     float sunVis=smoothstep(-0.015,0.02,el);
-    vec3 lit=uAmb+uSunCol*sunVis*(0.75+0.25*position.y);
-    float d0=distance(aPos,uL0.xyz); lit+=uL0c*uL0.w/(1.+d0*d0*0.0015);
-    float d1=distance(aPos,uL1.xyz); lit+=uL1c*uL1.w/(1.+d1*d1*0.0015);
+    vec3 lit=uAmb+uSunCol*sunVis*(0.5+0.2*position.y);
+    float d0=distance(aPos,uL0.xyz); lit+=uL0c*uL0.w/(1.+d0*d0*0.006);
+    float d1=distance(aPos,uL1.xyz); lit+=uL1c*uL1.w/(1.+d1*d1*0.006);
     vLit=lit;
   }
   gl_Position=projectionMatrix*mv;
@@ -24,7 +24,8 @@ const PART_FS = `#include <logdepthbuf_pars_fragment>
 uniform sampler2D uTex; varying vec2 vUv; varying vec4 vCol; varying vec3 vLit;
 void main(){
   #include <logdepthbuf_fragment>
-  vec4 t=texture2D(uTex,vUv); gl_FragColor=vec4(vCol.rgb*vLit,t.a*vCol.a);
+  vec4 t=texture2D(uTex,vUv); vec3 c=vCol.rgb*vLit; c=c/(1.+max(max(c.r,c.g),c.b)*0.35); /* soft-clip: lit smoke never blooms into a white-out */
+  gl_FragColor=vec4(c,t.a*vCol.a);
 }`;
 class Particles {
   constructor(max, glow, tex) {
